@@ -49,7 +49,7 @@ class EmployeesDao {
 
     async insertDepartment(newDept) {
         return await this.#connection.query(
-            `INSERT INTO department (name) VALUE ?`,
+            `INSERT INTO department (name) VALUES (?)`,
             newDept
         );
     }
