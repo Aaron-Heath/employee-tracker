@@ -17,9 +17,7 @@ class EmployeesDao {
         });
     }
 
-    // WHEN I choose to view all employees
-    // THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-    async fetchAllEmployees() {
+        async fetchAllEmployees() {
         return await this.#connection.query(
             `SELECT 
                 employee.employee_id,
@@ -35,14 +33,10 @@ class EmployeesDao {
         );
     }
 
-    // WHEN I choose to view all departments
-    // THEN I am presented with a formatted table showing department names and department ids
     async fetchAllDepartments() {
         return await this.#connection.query("SELECT * FROM department");
     }
 
-    // WHEN I choose to view all roles
-    // THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
     async fetchAllRoles() {
         return await this.#connection.query("SELECT role.role_id, role.title, department.name AS department, role.salary FROM role JOIN department ON role.department_id = department.department_id");
     }
@@ -52,6 +46,28 @@ class EmployeesDao {
             `INSERT INTO department (name) VALUES (?)`,
             newDept
         );
+    }
+
+    async insertRole(title, salary, department_id) {
+        return await this.#connection.query(
+            'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)',
+            title, salary, department_id
+        );
+    }
+
+    async insertEmployee(firstName, lastName, role_id, manager_id) {
+        /**
+         * SQL prepared statement to insert new employee into database.
+         * 
+         * @param firstName String employee first name
+         * @param lastName String employee last name
+         * @param role_id Int - relates to role_id in role_table
+         * @param manager_id Int - relates to employee_id in employee table
+         */
+        return await this.#connection.query(
+            `INSERT INTO employee (first_name, last_name, role_id, manager_id) 
+            VALUES (?, ?, ?, ?)`, [firstName, lastName, role_id, manager_id]
+        )
     }
 }
 
