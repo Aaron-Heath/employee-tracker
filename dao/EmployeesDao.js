@@ -46,6 +46,13 @@ class EmployeesDao {
     async fetchAllRoles() {
         return await this.#connection.query("SELECT role.role_id, role.title, department.name AS department, role.salary FROM role JOIN department ON role.department_id = department.department_id");
     }
+
+    async insertDepartment(newDept) {
+        return await this.#connection.query(
+            `INSERT INTO department (name) VALUE ?`,
+            newDept
+        );
+    }
 }
 
 module.exports = EmployeesDao;
