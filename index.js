@@ -1,23 +1,12 @@
 // Import requirements
-const inquirer = require('inquirer');
-const EmployeesDao = require('./dao/EmployeesDao');
-const mysql = require('mysql2/promise');
+const { table } = require('table');
+const EmployeeApp = require('./EmployeeApp');
+
 
 async function main() {
-
-    const connection = await mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'rootroot',
-        database: 'employees_db'
-    });
-
-    const employeesDao = new EmployeesDao(connection);
- 
-
-    const data = await employeesDao.fetchAllRoles();
-    console.log(data);
-
+    const app = new EmployeeApp();
+    await app.run();
+    return;
 }
 
 main();
