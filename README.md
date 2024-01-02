@@ -8,7 +8,7 @@ A recording of the application's primary functionality can be found [here](https
 
 ## Installation
 
-Clone or fork this repository to your local machine. Be sure to `npm install inquirer@8.2.4` and `npm install mysql2`.
+Clone or fork this repository to your local machine. Be sure to `npm install i` to get the correct packages for the application.
 
 ## Usage
 
