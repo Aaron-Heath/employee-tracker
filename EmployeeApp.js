@@ -4,7 +4,6 @@ const EmployeesDao = require('./dao/EmployeesDao');
 
 class EmployeeApp {
     #employeesDao;
-    #menus = {};
     #tableHeaders = {
         'roles': [
             "id", "Title", "Department", "Salary"
