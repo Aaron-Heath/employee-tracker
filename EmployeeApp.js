@@ -226,14 +226,15 @@ class EmployeeApp {
         
         // Get all available roles and employees AS managers
         const rolesQuery = await this.#employeesDao.fetchAllRoles();
-        const managersQuery = await this.#employeesDao.fetchAllEmployeesJoinRole();
+        const managersQuery = await this.#employeesDao.fetchAllEmployees();
 
 
         // Convert roles and managers into arrays
         const rolesChoices = rolesQuery[0].map(role => role.title);
         const managerChoices = managersQuery[0].map(manager => `${manager.first_name} ${manager.last_name}`);
+        const noManager = "Not Applicable"
         // Add option for no manager
-        managerChoices.push("Not applicable");
+        managerChoices.push(noManager);
 
         //Prompt for input
         const response = await inquirer.prompt([
@@ -264,20 +265,19 @@ class EmployeeApp {
         // Extract role and manager objects
         const role = rolesQuery[0].filter(role => role.title === response.title)[0];
         
-        let manager = null;
-        if(response.manager != "Not applicable") {
-            manager = managersQuery[0].filter(manager => `${manager.first_name} ${manager.last_name}` === response.manager);
+        let manager_id;
+        if(response.manager != noManager) {
+            let manager = managersQuery[0].filter(manager => `${manager.first_name} ${manager.last_name}` === response.manager)[0];
+            console.log(manager);
+            manager_id = manager.employee_id;
         }
 
         await this.#employeesDao.insertEmployee(
             response.firstName,
             response.lastName,
             role.role_id,
-            manager ? manager.employee_id : manager
+            manager_id
         );
-
-        // Provide feedback
-        console.log(`${response.firstName} ${response.lastName} added!`);
     }
 
     async updateEmployeeRole() {
