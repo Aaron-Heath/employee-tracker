@@ -268,7 +268,6 @@ class EmployeeApp {
         let manager_id;
         if(response.manager != noManager) {
             let manager = managersQuery[0].filter(manager => `${manager.first_name} ${manager.last_name}` === response.manager)[0];
-            console.log(manager);
             manager_id = manager.employee_id;
         }
 
@@ -311,9 +310,6 @@ class EmployeeApp {
 
         // Get role from response
         const role = rolesQuery[0].filter(role => role.title === response.title)[0];
-
-        console.log(employee);
-        console.log(role);
 
         // Call database update
         await this.#employeesDao.updateEmployeeRole(
