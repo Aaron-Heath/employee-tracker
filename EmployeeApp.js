@@ -87,6 +87,11 @@ class EmployeeApp {
                 await this.insertEmployee();
                 break;
             
+            case "Update Employee Role":
+                await this.updateEmployeeRole();
+                break;
+
+
             default:
                 console.log("Something went wrong, please start again.");
                 return;
@@ -109,7 +114,7 @@ class EmployeeApp {
         // THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
 
         // Query data from database
-        const queryResults = await this.#employeesDao.fetchAllEmployees();
+        const queryResults = await this.#employeesDao.fetchAllEmployeesJoinRole();
 
         // Pull needed data
         const data = queryResults[0];
@@ -221,7 +226,7 @@ class EmployeeApp {
         
         // Get all available roles and employees AS managers
         const rolesQuery = await this.#employeesDao.fetchAllRoles();
-        const managersQuery = await this.#employeesDao.fetchAllEmployees();
+        const managersQuery = await this.#employeesDao.fetchAllEmployeesJoinRole();
 
 
         // Convert roles and managers into arrays
@@ -273,8 +278,49 @@ class EmployeeApp {
 
         // Provide feedback
         console.log(`${response.firstName} ${response.lastName} added!`);
+    }
 
+    async updateEmployeeRole() {
+        // Get roles and employees
+        const rolesQuery = await this.#employeesDao.fetchAllRoles();
+        const employeesQuery = await this.#employeesDao.fetchAllEmployees();
 
+        // Convert to useable arrays for inquirer
+        const rolesChoices = rolesQuery[0].map(role => role.title);
+        const employeesChoices = employeesQuery[0].map(employee => `${employee.first_name} ${employee.last_name}`);
+
+        // Prompt for input
+        const response = await inquirer.prompt([
+            {
+                name: "employee",
+                message: "Which employee would you like to update",
+                type: 'list',
+                choices: employeesChoices
+            },
+            {
+                name: 'title',
+                message: "What is their new role?",
+                type:"list",
+                choices: rolesChoices
+            }
+            
+        ]);
+
+        // Get employee from response
+        const employee = employeesQuery[0].filter(employee => `${employee.first_name} ${employee.last_name}` === response.employee)[0];
+
+        // Get role from response
+        const role = rolesQuery[0].filter(role => role.title === response.title)[0];
+
+        console.log(employee);
+        console.log(role);
+
+        // Call database update
+        await this.#employeesDao.updateEmployeeRole(
+            employee.employee_id,
+            role.role_id,
+            employee.role_id
+        );
     }
 
 }
